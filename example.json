@@ -1,0 +1,40 @@
+{
+  "answers": [
+    [
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      1
+    ]
+  ],
+  "initial_probes": [
+    0
+  ],
+  "query_cost": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "execution_budget": 100,
+  "label_budget": 4,
+  "target_program": 1
+}
