@@ -74,4 +74,56 @@ The example is an explicit analytical/simulated input specification, not an expe
 
 ## Reproduction logic conventions
 
-The initial probe bank is charged before search. If its program-by-probe executions exceed execution_budget, execution is rejected instead of starting with an already-exceeded budget. The answer table must come from the declared interpreter/simulator; the repository does not bundle CLEVR/GQA interpreters or held-out visual-question evaluation.
+The initial probe bank is charged before search. If its program-by-probe executions exceed execution_budget, execution is rejected instead of starting with an already-exceeded budget. The answer table must come from the declared interpreter/simulator; the original table interface does not by itself execute programs on unseen inputs. The scene interpreter path below supplies actual program execution and a separate held-out endpoint; visual perception frontends remain external.
+
+## Execute programs and evaluate independent inputs
+
+Use the actual scene interpreter instead of a precomputed answer table:
+
+```bash
+python -m equivalence_search.interpreter acquire --problem problem.json --labels reservoir_labels.json --variant full --output runs/posterior.json
+python -m equivalence_search.interpreter evaluate --posterior runs/posterior.json --heldout heldout.json --output runs/heldout_metrics.json
+```
+
+`problem.json` contains `programs` (a fixed program universe), `reservoir` (unlabeled
+inputs), positive `query_cost` per input, `execution_budget` (interpreter calls),
+`label_budget`, optional normalized `prior`, `initial_probes`, a predeclared
+`probe_order` permutation, and `exposure_ratio` (default 0.5). The labels file is a
+JSON array aligned with the reservoir. Acquisition only requests selected labels
+and records their cost. It accepts no held-out file or evaluation references.
+
+The built-in pure interpreter executes JSON AST nodes with `op` and recursive
+`inputs`. Supported operators are `scene`, `filter` (attribute/value), `unique`,
+`relate` (relation), `count`, `exist`, `query` (attribute), and `equal`.
+For example, `{"op":"count","inputs":[{"op":"scene"}]}` counts scene objects.
+An input is `{"scene":{"objects":[{"color":"red"}],"relationships":{}}}`;
+relationship values are lists of related object-ID lists. Parameters may use
+`{"slot":"name"}` to read declared question slots from the input. Invalid
+`unique`, missing attributes/relations, and other undefined legal results return
+JSON null; unsupported grammar raises an error. This is executable scene-level
+semantics, with no learned visual frontend or neural proposal model implied.
+
+For another declared grammar, `--interpreter /absolute/path/interpreter.py` loads
+a local pure `execute(program, input)` function. It returns a JSON-serializable
+answer or null for an undefined result, without accessing labels, held-out data,
+or mutable execution history. Use the same grammar and interpreter in both phases.
+No service is started and no network/API is called.
+
+All hidden class members and prior mass remain present. Exposure-limited search
+expands probes in the declared input-only order; every currently surviving
+member execution is charged and its output retained in `execution_ledger`.
+The `uncompressed` variant uses member-wise acquisition probabilities on the
+same program universe, while `fixed_probes` prevents expansion. Class memberships,
+class masses, entropy, requested labels and posterior weights are exported so
+compression can be compared without silently changing the universe.
+
+`heldout.json` is a JSON array of `{"id":...,"input":...,"answer":...}` records,
+opened only by the separate evaluation command. Evaluation reexecutes **every**
+surviving program on each unseen input, including members that shared a probe
+signature. Posterior vote ties use canonical JSON order. Undefined results, empty
+posterior support, and insufficient `--execution-budget` remain in the accuracy
+denominator and are incorrect. The optional held-out execution budget has its
+own ledger and cannot feed acquisition. Full program outputs and answer masses
+are retained per example. Supply independently partitioned reservoir/held-out
+records and externally obtained visual scenes or perception outputs for CLEVR/GQA
+experiments; the bundled interpreter does not reproduce those perception models.
