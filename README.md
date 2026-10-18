@@ -71,3 +71,7 @@ equivalence-search execute --input example.json --output runs/execution --varian
 ```
 
 The example is an explicit analytical/simulated input specification, not an experiment result. Replace it with the schema described above for application data. The execute path writes the actual selected actions, constraints, and mechanism metrics.
+
+## Reproduction logic conventions
+
+The initial probe bank is charged before search. If its program-by-probe executions exceed execution_budget, execution is rejected instead of starting with an already-exceeded budget. The answer table must come from the declared interpreter/simulator; the repository does not bundle CLEVR/GQA interpreters or held-out visual-question evaluation.

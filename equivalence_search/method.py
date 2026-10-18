@@ -20,6 +20,7 @@ def entropy(probability):
 
 def search(problem,variant='full'):
     answers=np.asarray(problem['answers']);weight=np.asarray(problem.get('prior',np.ones(len(answers))),float);weight/=weight.sum();probes=list(problem.get('initial_probes',[0]));queried=[];executions=len(answers)*len(probes);label_cost=0.;history=[]
+    if executions>problem['execution_budget']:raise ValueError('Initial probe executions exceed the execution budget')
     target=problem['target_program'];noise=problem.get('label_noise',0.)
     def partition():
         classes={}
