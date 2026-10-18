@@ -1,0 +1,39 @@
+[
+  {
+    "id": "two_red",
+    "input": {
+      "scene": {
+        "objects": [
+          {
+            "color": "red"
+          },
+          {
+            "color": "red"
+          },
+          {
+            "color": "blue"
+          }
+        ],
+        "relationships": {}
+      }
+    },
+    "answer": 2
+  },
+  {
+    "id": "empty_red",
+    "input": {
+      "scene": {
+        "objects": [
+          {
+            "color": "blue"
+          },
+          {
+            "color": "green"
+          }
+        ],
+        "relationships": {}
+      }
+    },
+    "answer": 0
+  }
+]

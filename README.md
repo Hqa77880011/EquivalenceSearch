@@ -127,3 +127,24 @@ own ledger and cannot feed acquisition. Full program outputs and answer masses
 are retained per example. Supply independently partitioned reservoir/held-out
 records and externally obtained visual scenes or perception outputs for CLEVR/GQA
 experiments; the bundled interpreter does not reproduce those perception models.
+
+## Selected scene-program setting
+
+The chosen program universe is the three actual ASTs in `scene_problem.json`:
+count red objects, count all objects, and test existence of red objects. Three
+unlabeled reservoir scenes, prior 1/3, deterministic probe order, 12 interpreter
+calls and label cost 2 define a finite reasoning problem. `scene_labels.json`
+supplies its label oracle; independently declared `scene_heldout.json` supplies
+two unseen scenes. These files are analytical task inputs, not experiment results.
+The type-sensitive answer encoding distinguishes integer 1 from Boolean true.
+
+```bash
+python -m equivalence_search.interpreter acquire --problem scene_problem.json --labels scene_labels.json --variant full --output runs/scene_posterior.json
+python -m equivalence_search.interpreter evaluate --posterior runs/scene_posterior.json --heldout scene_heldout.json --output runs/scene_metrics.json
+```
+
+The included pure interpreter is the actual backend, with no visual frontend,
+model download or precomputed answer table required. The same universe can be
+run with --variant uncompressed or fixed_probes. Larger independent scene AST
+problems can use the same protocol; visual question answering is a separate
+optional input source rather than an unmet requirement of this setting.

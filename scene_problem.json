@@ -1,0 +1,98 @@
+{
+  "programs": [
+    {
+      "op": "count",
+      "inputs": [
+        {
+          "op": "filter",
+          "attribute": "color",
+          "value": "red",
+          "inputs": [
+            {
+              "op": "scene"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "count",
+      "inputs": [
+        {
+          "op": "scene"
+        }
+      ]
+    },
+    {
+      "op": "exist",
+      "inputs": [
+        {
+          "op": "filter",
+          "attribute": "color",
+          "value": "red",
+          "inputs": [
+            {
+              "op": "scene"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "reservoir": [
+    {
+      "scene": {
+        "objects": [
+          {
+            "color": "red"
+          }
+        ],
+        "relationships": {}
+      }
+    },
+    {
+      "scene": {
+        "objects": [
+          {
+            "color": "red"
+          },
+          {
+            "color": "blue"
+          }
+        ],
+        "relationships": {}
+      }
+    },
+    {
+      "scene": {
+        "objects": [
+          {
+            "color": "blue"
+          }
+        ],
+        "relationships": {}
+      }
+    }
+  ],
+  "prior": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+  ],
+  "query_cost": [
+    1,
+    1,
+    1
+  ],
+  "initial_probes": [
+    0
+  ],
+  "probe_order": [
+    0,
+    1,
+    2
+  ],
+  "execution_budget": 12,
+  "label_budget": 2,
+  "exposure_ratio": 0.5
+}
